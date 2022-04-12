@@ -57,3 +57,5 @@ simple_string &operator<<(simple_string &sstr, const char *str) {
 
     return sstr;
 }
+
+const char *simple_string::get_data() const { return data; }

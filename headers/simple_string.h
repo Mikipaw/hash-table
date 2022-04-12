@@ -32,11 +32,13 @@ public:
     explicit simple_string (FILE* src);
     explicit simple_string (const char* src);
 
-    simple_string& operator=(const simple_string& cpu) = delete;
+    //simple_string& operator=(const simple_string& cpu) = delete;
     simple_string(const simple_string&)                = delete;
 
     friend simple_string& operator<<(simple_string& sstr, const char* str);
     friend bool operator==(const simple_string& s1, const simple_string& s2) { return !strcmp(s1.data, s2.data); }
+
+    const char* get_data() const;
 
     ~simple_string() { delete[] data; }
 private:
