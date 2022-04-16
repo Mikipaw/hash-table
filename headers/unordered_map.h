@@ -18,23 +18,28 @@ namespace mp5 {
     class unordered_map {
         public:
 
-        void rehash();
-        void reserve(size_t capacity);
+        //void rehash();                    probably doesn't need, because list is expanding automatically.
+        //void reserve(size_t capacity);
 
-        explicit unordered_map(size_t(*hash_func) (const char *));
+        explicit unordered_map(size_t(*hash_function) (const simple_string&));
 
-        void verificator() const;
+        unordered_map(size_t(*hash_function) (const simple_string&), size_t capacity);
+
+        void dump() const;
 
         void insert(List_elem elem);
         void insert(const simple_string& key);
         bool remove(const simple_string& key);
-        const simple_string* find(const simple_string& key) const;
+
+        [[nodiscard]] const simple_string*    find_ptr(const simple_string& key) const;
+        [[nodiscard]] size_t                  find_pos(const simple_string& key) const;
+
 
         ~unordered_map() = default;
 
         private:
-            List elements;
-            vector<List>::iterator array;
+            List elements = List(32);
+            vector<size_t> array;
 
             size_t (*hash_func)(const simple_string&);
     };

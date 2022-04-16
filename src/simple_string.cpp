@@ -58,4 +58,45 @@ simple_string &operator<<(simple_string &sstr, const char *str) {
     return sstr;
 }
 
+char& simple_string::operator[](int index) {
+    if (index >= size) {
+        fprintf(stderr, "Array index out of bound, exiting...\n");
+        throw std::out_of_range("Index out of range!\n");
+    }
+
+    return data[index];
+}
+
+
+char& simple_string::operator[](int index) const{
+    if (index >= size) {
+        fprintf(stderr, "Array index out of bound, exiting...\n");
+        throw std::out_of_range("Index out of range!\n");
+    }
+
+    return data[index];
+}
+
 const char *simple_string::get_data() const { return data; }
+
+size_t simple_string::get_size() const { return size; }
+
+int sscmp(const simple_string& s1, const simple_string& s2) {
+    int i = 0, j = 0;
+    while(true) {
+        while(!(isalpha(s1[i]) || s1[i] == '\0')) i++;
+        while(!(isalpha(s2[j]) || s2[j] == '\0')) j++;
+
+        if (s1[i] == '\0' &&
+            s2[j] == '\0')
+            return 0;
+
+        if (s1[i] == s2[j]){
+            i++;
+            j++;
+        }
+
+        else
+            return s1[i] - s2[j] / abs(s1[i] - s2[j]);
+    }
+}

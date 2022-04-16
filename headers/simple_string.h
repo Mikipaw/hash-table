@@ -8,6 +8,7 @@
 
 #include <cstring>
 #include <cstdio>
+#include <stdexcept>
 
 class simple_string;
 
@@ -17,7 +18,7 @@ class simple_string;
  * @param s2
  * @return {s1 > s2 => 1}, {s1 == s2 => 0}, {s1 < s2 => -1}
  */
-int sscmp(simple_string s1, simple_string s2);
+int sscmp(const simple_string& s1, const simple_string& s2);
 
 
 size_t Size_of_file(FILE* name_of_file);
@@ -33,12 +34,17 @@ public:
     explicit simple_string (const char* src);
 
     //simple_string& operator=(const simple_string& cpu) = delete;
-    simple_string(const simple_string&)                = delete;
+    //simple_string(const simple_string&)                = delete;
+
+    char& operator[](int);
+    char& operator[](int) const;
+
 
     friend simple_string& operator<<(simple_string& sstr, const char* str);
     friend bool operator==(const simple_string& s1, const simple_string& s2) { return !strcmp(s1.data, s2.data); }
 
-    const char* get_data() const;
+    [[nodiscard]] const char* get_data() const;
+    [[nodiscard]] size_t      get_size() const;
 
     ~simple_string() { delete[] data; }
 private:
