@@ -10,7 +10,7 @@ size_t best_hash(const simple_string& key) {
 }
 
 size_t first_sym_hash(const simple_string& key) {
-    return key.get_data()[0];
+    return (size_t) key.get_data()[0];
 }
 
 size_t len_hash(const simple_string& key) {

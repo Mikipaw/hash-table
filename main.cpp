@@ -17,7 +17,7 @@ int main() {
     ump.insert(simple_string("I"));
     ump.insert(simple_string("Cant"));
     ump.insert(simple_string("Hold"));
-    ump.insert(simple_string("My"));
+    ump.insert(simple_string("Myy"));
     ump.insert(simple_string("Fire"));
     ump.insert(simple_string("Again"));
 

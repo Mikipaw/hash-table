@@ -17,7 +17,9 @@ unordered_map::unordered_map(size_t(*hash_function) (const simple_string&)) : ha
 }
 
 unordered_map::unordered_map(size_t(*hash_function) (const simple_string&), size_t capacity) : hash_func(hash_function) {
-    elements = List(capacity);
+    array = vector<size_t>(capacity);
+    std::fill(array.begin(), array.end(), default_val);
+    //elements = List(capacity);
     //array.reserve(capacity);
     //array[0] = &elements;
 }
@@ -26,7 +28,7 @@ void unordered_map::insert(List_elem elem) {
     elem.cache = elem.cache % array.capacity();
 
     if (array[elem.cache] == default_val)
-        array[elem.cache] = elements.Insert(elements.Get_tail(), elem.item);
+        array[elem.cache] = elements.Insert(elements.Get_tail(), elem.item, elem.cache);
 
     else {
         size_t cur_pos = array[elem.cache];
@@ -34,7 +36,7 @@ void unordered_map::insert(List_elem elem) {
         while (sscmp(elem.item, elements[cur_pos].item) == 1 && elem.cache == NEXT_CACHE)
             cur_pos = elements[cur_pos].next;
 
-        elements.Insert(array[elem.cache], elem.item);
+        elements.Insert(array[elem.cache], elem.item, elem.cache);
     }
 }
 
@@ -42,7 +44,7 @@ void unordered_map::insert(const simple_string& elem) {
     size_t cache = hash_func(elem) % array.capacity();
 
     if (array[cache] == default_val)
-        array[cache] = elements.Insert(elements.Get_tail(), elem);
+        array[cache] = elements.Insert(elements.Get_tail(), elem, cache);
 
     else {
         size_t cur_pos = array[cache];
@@ -50,7 +52,7 @@ void unordered_map::insert(const simple_string& elem) {
         while (sscmp(elem, elements[cur_pos].item) == 1 && cache == NEXT_CACHE)
             cur_pos = elements[cur_pos].next;
 
-        elements.Insert(array[cache], elem);
+        elements.Insert(array[cache], elem, cache);
     }
 }
 
@@ -105,4 +107,4 @@ size_t unordered_map::find_pos(const simple_string& key) const {
     return default_val;
 }
 
-void unordered_map::dump() const { elements.Dump(); }
+void unordered_map::dump() { elements.Dump(); }

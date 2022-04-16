@@ -25,7 +25,7 @@ namespace mp5 {
 
         unordered_map(size_t(*hash_function) (const simple_string&), size_t capacity);
 
-        void dump() const;
+        void dump();
 
         void insert(List_elem elem);
         void insert(const simple_string& key);

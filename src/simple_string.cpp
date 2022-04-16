@@ -47,19 +47,21 @@ simple_string &operator<<(simple_string &sstr, const char *str) {
     size_t src_size = strlen(str);
     sstr.size += src_size + 1;
 
-    auto new_data = new char [sstr.size];
+    auto new_data = new char [sstr.size + src_size + 1];
 
-    strcpy(new_data, sstr.data);
+    if (sstr.data != nullptr) strcpy(new_data, sstr.data);
+    else 0;
+
     new_data = strcat(new_data, str);
 
-    delete[] sstr.data;
+    //delete[] sstr.data;
     sstr.data = new_data;
 
     return sstr;
 }
 
 char& simple_string::operator[](int index) {
-    if (index >= size) {
+    if (index > size) {
         fprintf(stderr, "Array index out of bound, exiting...\n");
         throw std::out_of_range("Index out of range!\n");
     }
@@ -69,7 +71,7 @@ char& simple_string::operator[](int index) {
 
 
 char& simple_string::operator[](int index) const{
-    if (index >= size) {
+    if (index > size) {
         fprintf(stderr, "Array index out of bound, exiting...\n");
         throw std::out_of_range("Index out of range!\n");
     }
