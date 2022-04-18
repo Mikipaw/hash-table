@@ -54,7 +54,7 @@ simple_string &operator<<(simple_string &sstr, const char *str) {
 
     new_data = strcat(new_data, str);
 
-    //delete[] sstr.data;
+    delete[] sstr.data;
     sstr.data = new_data;
 
     return sstr;
@@ -79,9 +79,9 @@ char& simple_string::operator[](int index) const{
     return data[index];
 }
 
-const char *simple_string::get_data() const { return data; }
+const char* simple_string::get_data() const { return data; }
 
-size_t simple_string::get_size() const { return size; }
+size_t      simple_string::get_size() const { return size; }
 
 int sscmp(const simple_string& s1, const simple_string& s2) {
     int i = 0, j = 0;
@@ -99,6 +99,37 @@ int sscmp(const simple_string& s1, const simple_string& s2) {
         }
 
         else
-            return s1[i] - s2[j] / abs(s1[i] - s2[j]);
+            return s1[i] - s2[j];
     }
+}
+
+int Arrange_str_ptrs(simple_string* pointers, size_t number_of_lines, char* text) {
+    assert(pointers != nullptr);
+    assert(text != nullptr);
+    int number_of_empty_lines = 0;
+    //char *ptr = text;
+    for (int i = 1; i < number_of_lines; ++i) {
+        text = strchr(text, '\0');
+        text++;
+        pointers[i].data = text;
+        pointers[i - 1].size = (int) (pointers[i].data - pointers[i - 1].data);
+        if (pointers[i - 1].data[0] == '\n')
+            number_of_empty_lines++;
+    }
+
+    return number_of_empty_lines;
+}
+
+char* text_from_file(FILE* file_name, size_t size_of_file, int* number_of_lines) {
+    char* result_string = (char*) calloc(size_of_file + 5, sizeof(char));
+    fread(result_string, sizeof(char), size_of_file + 5, file_name);
+
+    for(int i = 0; i < size_of_file; ++i){
+        if(result_string[i] == '\n'){
+            //result_string[i++]  = '\n';
+            result_string[i]    = '\0';
+            (*number_of_lines)++;
+        }
+    }
+    return result_string;
 }

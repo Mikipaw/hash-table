@@ -13,6 +13,7 @@ using namespace mp5;
 
 unordered_map::unordered_map(size_t(*hash_function) (const simple_string&)) : hash_func(hash_function) {
     //array[0] = &elements;
+    array.reserve(CAPACITY);
     std::fill(array.begin(), array.end(), default_val);
 }
 
@@ -33,7 +34,7 @@ void unordered_map::insert(List_elem elem) {
     else {
         size_t cur_pos = array[elem.cache];
 
-        while (sscmp(elem.item, elements[cur_pos].item) == 1 && elem.cache == NEXT_CACHE)
+        while (sscmp(elem.item, elements[cur_pos].item) > 0 && elem.cache == NEXT_CACHE)
             cur_pos = elements[cur_pos].next;
 
         elements.Insert(array[elem.cache], elem.item, elem.cache);
@@ -43,13 +44,15 @@ void unordered_map::insert(List_elem elem) {
 void unordered_map::insert(const simple_string& elem) {
     size_t cache = hash_func(elem) % array.capacity();
 
-    if (array[cache] == default_val)
+    if (array[cache] == default_val) {
+        ++actual_size;
         array[cache] = elements.Insert(elements.Get_tail(), elem, cache);
-
+    }
     else {
+        ++collisions_number;
         size_t cur_pos = array[cache];
 
-        while (sscmp(elem, elements[cur_pos].item) == 1 && cache == NEXT_CACHE)
+        while (sscmp(elem, elements[cur_pos].item) > 0 && cache == NEXT_CACHE)
             cur_pos = elements[cur_pos].next;
 
         elements.Insert(array[cache], elem, cache);
@@ -64,7 +67,7 @@ bool unordered_map::remove(const simple_string& key) {
 
     int cur_pos = array[cache];
 
-    while (sscmp(key, elements[cur_pos].item) == 1 && cache == NEXT_CACHE) ++cur_pos;
+    while (sscmp(key, elements[cur_pos].item) > 0 && cache == NEXT_CACHE) ++cur_pos;
 
     if (!sscmp(key, elements[cur_pos].item)) {              //strings are equal
         if (cur_pos == array[cache]) {
@@ -79,16 +82,16 @@ bool unordered_map::remove(const simple_string& key) {
     return false;
 }
 
-const simple_string* unordered_map::find_ptr(const simple_string& key) const {
+simple_string* unordered_map::find_ptr(const simple_string& key) {
     size_t cache = hash_func(key);
 
     if (array[cache] == default_val) return nullptr;
 
     int cur_pos = array[cache];
 
-    while (sscmp(key, elements.at(cur_pos).item) == 1 && cache == NEXT_CACHE) ++cur_pos;
+    while (sscmp(key, elements.at(cur_pos).item) > 0 && cache == NEXT_CACHE) ++cur_pos;
 
-    if (!sscmp(key, elements.at(cur_pos).item)) return &elements.at(cur_pos).item;             //strings are equal
+    if (!sscmp(key, elements.at(cur_pos).item)) return &elements[cur_pos].item;             //strings are equal
 
     return nullptr;
 }
@@ -100,7 +103,7 @@ size_t unordered_map::find_pos(const simple_string& key) const {
 
     int cur_pos = array[cache];
 
-    while (sscmp(key, elements.at(cur_pos).item) == 1 && cache == NEXT_CACHE) ++cur_pos;
+    while (sscmp(key, elements.at(cur_pos).item) > 0 && cache == NEXT_CACHE) ++cur_pos;
 
     if (!sscmp(key, elements.at(cur_pos).item)) return cur_pos;             //strings are equal
 
@@ -108,3 +111,10 @@ size_t unordered_map::find_pos(const simple_string& key) const {
 }
 
 void unordered_map::dump() { elements.Dump(); }
+
+
+const char* mp5::unordered_map::operator[](int    pos) { return elements[pos].item.get_data(); }
+
+const char* mp5::unordered_map::operator[](size_t pos) { return elements[pos].item.get_data(); }
+
+void mp5::unordered_map::get_coll_num() const { printf("Number of collisions = %ld\n", collisions_number / actual_size); }

@@ -31,17 +31,24 @@ namespace mp5 {
         void insert(const simple_string& key);
         bool remove(const simple_string& key);
 
-        [[nodiscard]] const simple_string*    find_ptr(const simple_string& key) const;
+        [[nodiscard]] simple_string*          find_ptr(const simple_string& key);
         [[nodiscard]] size_t                  find_pos(const simple_string& key) const;
 
+        void               get_coll_num() const;
+
+        const char* operator[](int    pos);
+        const char* operator[](size_t pos);
 
         ~unordered_map() = default;
 
         private:
-            List elements = List(32);
+            List elements = List(CAPACITY);
             vector<size_t> array;
 
             size_t (*hash_func)(const simple_string&);
+
+            size_t collisions_number    = 0;
+            size_t actual_size          = 0;
     };
 }
 

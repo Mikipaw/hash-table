@@ -9,6 +9,7 @@
 #include <cstring>
 #include <cstdio>
 #include <stdexcept>
+#include <cassert>
 
 class simple_string;
 
@@ -25,6 +26,9 @@ size_t Size_of_file(FILE* name_of_file);
 
 char* text_from_file(FILE* file_name, size_t size_of_file);
 
+char* text_from_file(FILE* file_name, size_t size_of_file, int* number_of_lines);
+
+int Arrange_str_ptrs(simple_string* pointers, size_t number_of_lines, char* text);
 
 class simple_string {
 public:
@@ -46,8 +50,7 @@ public:
     [[nodiscard]] const char* get_data() const;
     [[nodiscard]] size_t      get_size() const;
 
-//    ~simple_string() { delete[] data; }
-private:
+    ~simple_string() { delete[] data; }
     char* data = new char[31];
     size_t size = 31;
 };
