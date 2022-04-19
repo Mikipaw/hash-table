@@ -5,6 +5,8 @@
 #ifndef HASHTABLE_HASH_FUNCTIONS_H
 #define HASHTABLE_HASH_FUNCTIONS_H
 
+#include <immintrin.h>
+
 inline size_t best_hash(const simple_string& key) {
     return 1;
 }
@@ -55,6 +57,10 @@ inline size_t my_hash(const simple_string& key) {
 
 inline size_t ull_hash(const simple_string& key) {
     return *key.data;
+}
+
+inline size_t crc_hash(const simple_string& key) {
+    return _mm_crc32_u64 (0, reinterpret_cast<const size_t&>(key));
 }
 
 #endif //HASHTABLE_HASH_FUNCTIONS_H

@@ -117,4 +117,4 @@ const char* mp5::unordered_map::operator[](int    pos) { return elements[pos].it
 
 const char* mp5::unordered_map::operator[](size_t pos) { return elements[pos].item.get_data(); }
 
-void mp5::unordered_map::get_coll_num() const { printf("Number of collisions = %ld\n", collisions_number / actual_size); }
+void mp5::unordered_map::get_coll_num() const { printf("Number of collisions = %lf\n", (float)collisions_number / (float)actual_size); }

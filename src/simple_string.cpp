@@ -84,22 +84,18 @@ const char* simple_string::get_data() const { return data; }
 size_t      simple_string::get_size() const { return size; }
 
 int sscmp(const simple_string& s1, const simple_string& s2) {
-    int i = 0, j = 0;
+    int i = 0;
     while(true) {
-        while(!(isalpha(s1[i]) || s1[i] == '\0')) i++;
-        while(!(isalpha(s2[j]) || s2[j] == '\0')) j++;
+        //while(s1[i] != '\0') i++;
 
         if (s1[i] == '\0' &&
-            s2[j] == '\0')
+            s2[i] == '\0')
             return 0;
 
-        if (s1[i] == s2[j]){
-            i++;
-            j++;
-        }
+        if (s1[i] == s2[i]) i++;
 
         else
-            return s1[i] - s2[j];
+            return s1[i] - s2[i];
     }
 }
 

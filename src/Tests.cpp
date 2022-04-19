@@ -7,7 +7,7 @@
 
 int main_test() {
     long time = clock();
-    mp5::unordered_map ump(my_hash, CAPACITY);
+    mp5::unordered_map ump(crc_hash, CAPACITY);
 
     FILE* original_text = fopen(FILENAME,    "rb");
 
