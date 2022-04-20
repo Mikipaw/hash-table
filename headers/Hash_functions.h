@@ -56,7 +56,7 @@ inline size_t my_hash(const simple_string& key) {
 }
 
 inline size_t ull_hash(const simple_string& key) {
-    return *key.data;
+    return reinterpret_cast<size_t>(key.data);
 }
 
 inline size_t crc_hash(const simple_string& key) {

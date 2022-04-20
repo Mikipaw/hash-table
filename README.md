@@ -31,7 +31,7 @@ Ideally, the hash function will assign each key to a unique bucket, but most has
 
 Let's see the complexity of standard C++ containers:
 
-![alt text](pictures/img.png)
+![standard containers](pictures/img.png)
 
 What can we say about hash table?
 
@@ -55,7 +55,72 @@ In my program I used this method to solve the problem with collisions.
 
 ### Creating a hash table class.
 
-I created a hash table class.
+I created a hash table class in ~~Java~~ C++.
 
 ### Effectivity of hash functions.
 
+The next task for me was making some experiments with different hash functions to understand the best one.
+For me good hash function is a function with average number of collisions less than 1 per element.
+
+I have created a diagram where you can see the exponential dependence (it is the best way to see differences between hash functions I used).
+
+![graphic](pictures/nocodhf.png)
+
+Before the optimization I used function _my_hash_, but after some time I changed it to _crc_hash_ (more on that later).
+
+### Choosing the profiler
+
+After some experiments I decided to use the perf profiler. It is more comfortable (because located in CLion) and it calls functions by their names.
+
+### Optimization № 1
+
+Firstly I saw this results:
+
+This is a relative usage of resources: 
+![relative](pictures/relative.jpg)
+
+And an absolute usage:
+![absolute](pictures/absolute.jpg)
+
+Here we can see that functions _my_hash_ (with _operator[]_) and _sscmp_ are so massive.
+They should be more modest.
+
+I think that upgrade of _operator[]_ is not possible, because there is nothing to upgrade.
+The only thing I can do is use it not so often.
+
+So I decided to optimize _sscmp_ function.
+I changed it to previous version, where it returns not {-1, 0, 1}, but sub of the first different symbols in 2 comparative words.
+After this we don't use division and getting the reminder.
+
+Here we see, that sscmp has increased almost 3 times. 
+
+![First optimization](pictures/first.jpg)
+
+So our program became faster on 2.6%.
+
+### Optimization № 2
+
+The next function in the queue — _Fill_new_elems_ in _double-linked-list_. After the optimization we don't call a _simple_string_ constructor for every iteration and
+every empty element's pointer to string points to 1 string at all.
+
+As a result we can see, that our program has increased on 10.3%:
+
+![Second optimization](pictures/second.jpg)
+
+The only minus of this optimization is that the empty string became less protected. Bit it is not necessary, because it needs for graphical dump only.
+
+### Optimization № 3
+
+The last optimization is hash function. I noticed that my function works so slow.
+On the seminar we were talking about length of the strings and as a result we understood that most of
+the words in English language have less than 32 letters. So I decided to use the constant size of every word equal to 32.
+In the secret book I have found out some information about crc32 function from Intel. 
+I checked the effectivity of this hash function and this function was better than mine in number of collisions and in speed.
+
+![Third optimization 1](pictures/third1.jpg)
+
+## Conclusion
+
+Finally, we may see that our program became really faster (~3 times).
+
+![Third optimization 2](pictures/third2.png)

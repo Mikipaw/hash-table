@@ -37,6 +37,7 @@ int main_test() {
     ump.get_coll_num();
 
     free(pointers);
+    free(text);
 
     printf("Programm time = %.3f sec\n", float(clock() - time) / CLOCKS_PER_SEC);
 
