@@ -1,7 +1,7 @@
 # Hash table optimization
 
 ## Introduction
-This is a students project from [Ded's](ded32.ru) course of 2nd semester in MIPT.  
+This is a students project from [Ded's](http://ded32.net.ru) course of 2nd semester in MIPT.  
 
 ## Goals
 The main tasks of the project:
@@ -57,12 +57,17 @@ In my program I used this method to solve the problem with collisions.
 
 I created a hash table class in ~~Java~~ C++.
 
+### Compilation parameters
+
+All measurements made with -O2 optimization.
+
 ### Effectivity of hash functions.
 
 The next task for me was making some experiments with different hash functions to understand the best one.
 For me good hash function is a function with average number of collisions less than 1 per element.
 
-I have created a diagram where you can see the exponential dependence (it is the best way to see differences between hash functions I used).
+I found a text file with more than 84000 words and used it for the measurements.
+After getting some results, I have created a diagram where you can see the exponential dependence (it is the best way to see differences between hash functions I used).
 
 ![graphic](pictures/nocodhf.png)
 
