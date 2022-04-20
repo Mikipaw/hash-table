@@ -17,7 +17,7 @@ The main tasks of the project:
 
 * My [double linked list](https://github.com/Mikipaw/MIPT-1sem/tree/master/MIPT_1sem/List) (upgraded) from 1st semester in MIPT
 * The _simple_string_ class and some functions with it came from my [Onegin project](https://github.com/Mikipaw/MIPT-1sem/tree/master/MIPT_1sem/Onegin)
-* 5 interesting hash functions were given by [Ded](ded32.ru)
+* 5 interesting hash functions were given by [Ded](http://ded32.net.ru)
 * [Callgrind](https://valgrind.org/docs/manual/cl-manual.html) profiler
 * [CLion perf](https://www.jetbrains.com/help/clion/cpu-profiler.html) profiler
 
@@ -66,7 +66,15 @@ All measurements made with -O2 optimization.
 The next task for me was making some experiments with different hash functions to understand the best one.
 For me good hash function is a function with average number of collisions less than 1 per element.
 
-I found a text file with more than 84000 words and used it for the measurements.
+I researched 5 different hash functions from [Ded](http://ded32.net.ru).
+List of the functions:
+* best_hash - returns 1 for every key
+* first_sym_hash - returns ASCII code of first symbol
+* len_hash - returns the length of the key string. 
+* sum_hash - returns sum of ASCII symbols from key string.
+* shift_hash - circular shift
+
+I created a text file with more than 84000 words and used it for the measurements.
 After getting some results, I have created a diagram where you can see the exponential dependence (it is the best way to see differences between hash functions I used).
 
 ![graphic](pictures/nocodhf.png)
@@ -97,6 +105,45 @@ So I decided to optimize _sscmp_ function.
 I changed it to previous version, where it returns not {-1, 0, 1}, but sub of the first different symbols in 2 comparative words.
 After this we don't use division and getting the reminder.
 
+Before:
+```c++
+int sscmp(const simple_string& s1, const simple_string& s2) {
+    int i = 0, j = 0;
+    while(true) {
+        while(!(isalpha(s1[i]) || s1[i] == '\0')) i++;
+        while(!(isalpha(s2[j]) || s2[j] == '\0')) j++;
+
+        if (s1[i] == '\0' &&
+            s2[j] == '\0')
+            return 0;
+
+        if (s1[i] == s2[j]){
+            i++;
+            j++;
+        }
+
+        else
+            return s1[i] - s2[j] / abs(s1[i] - s2[j]);
+    }
+}
+```
+
+After:
+```c++
+int sscmp(const simple_string& s1, const simple_string& s2) {
+    int i = 0;
+    while(true) {
+        if (s1[i] == '\0' &&
+            s2[i] == '\0')
+            return 0;
+
+        if (s1[i] == s2[i]) i++;
+        else
+            return s1[i] - s2[i];
+    }
+}
+```
+
 Here we see, that sscmp has increased almost 3 times. 
 
 ![First optimization](pictures/first.jpg)
@@ -107,6 +154,34 @@ So our program became faster on 2.6%.
 
 The next function in the queue — _Fill_new_elems_ in _double-linked-list_. After the optimization we don't call a _simple_string_ constructor for every iteration and
 every empty element's pointer to string points to 1 string at all.
+
+Before:
+```c++
+void List::Fill_new_elems() {
+    for(int i = size + 1; i <= capacity; ++i) {
+        data[i].next =  i + 1;
+        data[i].prev = -1;
+        data[i].item = simple_string("*empty*");
+        }
+}
+```
+
+After:
+```c++
+void List::Fill_new_elems() {
+    for(int i = size + 1; i <= capacity; ++i) {
+        data[i].next        =  i + 1;
+        data[i].prev        = -1;
+        data[i].item.size   = 7;
+        data[i].item.data   = EMPTY_STR;
+        }
+}
+```
+where
+```c++
+inline char EMPTY_STR[7] = {'*', 'e', 'm', 'p', 't', 'y', '*'};
+```
+
 
 As a result we can see, that our program has increased on 10.3%:
 
@@ -121,6 +196,30 @@ On the seminar we were talking about length of the strings and as a result we un
 the words in English language have less than 32 letters. So I decided to use the constant size of every word equal to 32.
 In the secret book I have found out some information about crc32 function from Intel. 
 I checked the effectivity of this hash function and this function was better than mine in number of collisions and in speed.
+
+Before:
+```c++
+inline size_t my_hash(const simple_string& key) {
+    size_t hash = 0;
+    size_t str_size = key.get_size();
+
+    for (int i = 0; i < str_size; ++i) {
+        hash += (hash << 13) ^ (hash >> 19);
+        hash -= key[(i * 2) % (int) str_size];
+    }
+
+    return hash;
+}
+```
+
+After:
+```c++
+inline size_t crc_hash(const simple_string& key) {
+    return _mm_crc32_u64 (0, reinterpret_cast<const size_t&>(key));
+}
+```
+
+And here you can see the results:
 
 ![Third optimization 1](pictures/third1.jpg)
 

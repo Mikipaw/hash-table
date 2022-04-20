@@ -8,24 +8,7 @@
 
 int List::Insert(int pos, const simple_string &value, size_t cache) {
     int new_pos = freehead;
-/*
-    if (List_BAD()) {
-        fprintf(stderr, "Current list is broken. Please destroy it and create new object.\n");
-        return INVALID_GRAPH;
-    }
 
-    if (pos < 0 || pos > capacity) {
-        fprintf(stderr, "Index is out of range.\n");
-        return OUT_OF_RANGE;
-    }
-
-    if (data[pos].prev == -1) {
-        fprintf(stderr, "Unavailable element.\n");
-        return UNAVAILABLE_ELEMENT;
-    }
-
-    if (pos >= head && pos < tail) linearized = false;
-*/
     if   (new_pos == capacity + 1) freehead = capacity + 2;
     else freehead = data[new_pos].next;
 
@@ -214,6 +197,8 @@ int List::List_BAD() const{
             if (data[data[curr_element].next].prev != curr_element) return INVALID_GRAPH;
     }
     */
+
+    //commented to optimize program speed
     return ALL_OK;
 }
 
