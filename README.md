@@ -11,7 +11,7 @@ The main tasks of the project:
 - [x] Use some different methods to optimize speed of work of hash table. 
 - [x] Show the results to interested people.
 - [x] Be impressive
-- [ ] ~~Find a gf~~
+- [ ] ~~Go in McDonald's~~
 
 ## Dependencies
 
